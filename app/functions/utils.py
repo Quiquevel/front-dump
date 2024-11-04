@@ -199,6 +199,39 @@ def get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, select
     else:
         st.warning("Error generating dump. The selected pod has not the neccesary tools for generating dumps. Please contact Domain.")
 
+def execute_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, delete, idToken, ldap, do_execute=None):
+    if do_execute == "HeapDump":
+        execute_button = st.button('Execute')
+        if execute_button:
+            try:
+                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'heapdump', delete, idToken, ldap)
+            except Exception as e:
+                st.write(f'Error downloading file: {e}')
+
+    if do_execute == "HeapDump DataGrid":
+        execute_button = st.button('Execute')
+        if execute_button:
+            try:
+                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'heapdump_datagrid', delete, idToken, ldap)
+            except Exception as e:
+                st.write(f'Error downloading file: {e}')
+
+    if do_execute == "ThreadDump":
+        execute_button = st.button('Execute')
+        if execute_button:
+            try:
+                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'threaddump', delete, idToken, ldap)
+            except Exception as e:
+                st.write(f'Error downloading file: {e}')
+
+    if do_execute == "ThreadDump DataGrid":
+        execute_button = st.button('Execute')
+        if execute_button:
+            try:
+                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'threaddump_datagrid', delete, idToken, ldap)
+            except Exception as e:
+                st.write(f'Error downloading file: {e}')
+
 if __name__ == '__main__':
 	TOKEN_1 = 'oBSioZKCTXi0-bwwtTftN'
 	get_gc()
