@@ -1,5 +1,5 @@
 import streamlit as st
-from functions.utils import tokenparameter, get_jvm_dump
+from functions.utils import tokenparameter, execute_dump
 from streamlit_javascript import st_javascript
 from functions.dyna import getDynaProblems, getSwitchStatus
 
@@ -21,6 +21,7 @@ async def do_dump_project():
     problems = await getDynaProblems(timedyna=timedyna,switchednamespaces=switchednamespaces)  # Para cachear la lista de problemas
 
     if problems:
+        delete = False
         # Add a empty option at the beginning
         problems.insert(0, "Select a problem...")  
         selected_problem = st.selectbox("Select an open problem", problems)
@@ -41,37 +42,7 @@ async def do_dump_project():
                 selectpod = st.selectbox('Select Pod', ([''] + flat_pod),key = "pod1")
                 if selectpod != '':
                     selectedheap = st.selectbox('Select type', ('', 'HeapDump', 'ThreadDump', 'HeapDump DataGrid', 'ThreadDump DataGrid'),key = "opt_restart_r")
-                    if selectedheap == "HeapDump":
-                        execute_button = st.button('Execute')
-                        if execute_button:
-                            try:
-                                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'heapdump', delete, idToken, ldap)
-                            except Exception as e:
-                                st.write(f'Error downloading file: {e}')
-
-                    if selectedheap == "HeapDump DataGrid":
-                        execute_button = st.button('Execute')
-                        if execute_button:
-                            try:
-                                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'heapdump_datagrid', delete, idToken, ldap)
-                            except Exception as e:
-                                st.write(f'Error downloading file: {e}')
-
-                    if selectedheap == "ThreadDump":
-                        execute_button = st.button('Execute')
-                        if execute_button:
-                            try:
-                                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'threaddump', delete, idToken, ldap)
-                            except Exception as e:
-                                st.write(f'Error downloading file: {e}')
-
-                    if selectedheap == "ThreadDump DataGrid":
-                        execute_button = st.button('Execute')
-                        if execute_button:
-                            try:
-                                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'threaddump_datagrid', delete, idToken, ldap)
-                            except Exception as e:
-                                st.write(f'Error downloading file: {e}')
+                    execute_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, delete, idToken, ldap, do_execute=selectedheap)
         else:
             st.write("No problem selected.")
     else:
@@ -131,37 +102,7 @@ async def do_dump_project():
                                             if selectpod != '':
                                                 selectedheap = st.selectbox('Select type', ('', 'HeapDump', 'ThreadDump', 'HeapDump DataGrid', 'ThreadDump DataGrid'),key = "opt_restart_r")
                                                 with col2:
-                                                    if selectedheap == "HeapDump":
-                                                        execute_button = st.button('Execute')
-                                                        if execute_button:
-                                                            try:
-                                                                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'heapdump', delete, idToken, ldap)
-                                                            except Exception as e:
-                                                                st.write(f'Error downloading file: {e}')
-
-                                                    if selectedheap == "HeapDump DataGrid":
-                                                        execute_button = st.button('Execute')
-                                                        if execute_button:
-                                                            try:
-                                                                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'heapdump_datagrid', delete, idToken, ldap)
-                                                            except Exception as e:
-                                                                st.write(f'Error downloading file: {e}')
-
-                                                    if selectedheap == "ThreadDump":
-                                                        execute_button = st.button('Execute')
-                                                        if execute_button:
-                                                            try:
-                                                                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'threaddump', delete, idToken, ldap)
-                                                            except Exception as e:
-                                                                st.write(f'Error downloading file: {e}')
-
-                                                    if selectedheap == "ThreadDump DataGrid":
-                                                        execute_button = st.button('Execute')
-                                                        if execute_button:
-                                                            try:
-                                                                get_jvm_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, 'threaddump_datagrid', delete, idToken, ldap)
-                                                            except Exception as e:
-                                                                st.write(f'Error downloading file: {e}')
+                                                    execute_dump(optionenv, optioncluster, optionregion, selectnamespace, selectpod, delete, idToken, ldap, do_execute=selectedheap)
     st.text('')
     st.text('')
     st.link_button("Help for analysis","https://sanes.atlassian.net/wiki/x/oABatAU",help="Go to documentation with tools and help to do the analysis")
